@@ -49,7 +49,7 @@ export function taskListReducer(
       index = state.taskLists.findIndex(
         (taskList) => taskList.id === action.payload.id
       );
-      
+
       if (index >= 0) {
         // state.taskLists.splice(index, 1, action.payload);
         newTaskLists = [
@@ -98,9 +98,13 @@ export function taskListReducer(
         taskListLoadState: LoadState.Loading,
       };
     case TaskListActionTypes.GET_TASKLISTS_SUCCESS:
+      newTaskLists = action.payload.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
       return {
         ...state,
-        taskLists: action.payload,
+        taskLists: newTaskLists,
         taskListLoadState: LoadState.LoadSuccessful,
       };
     case TaskListActionTypes.GET_TASKLISTS_FAILURE:

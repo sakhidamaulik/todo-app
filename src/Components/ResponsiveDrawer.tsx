@@ -1,11 +1,4 @@
-import React, {
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { v4 as uuid } from "uuid";
+import React, { useEffect, useCallback, useState } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
@@ -16,77 +9,84 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import AddIcon from "@material-ui/icons/Add";
-import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import MenuIcon from "@material-ui/icons/Menu";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import AddIcon from "@material-ui/icons/Add";
+import { v4 as uuid } from "uuid";
+import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
+
+import {
+  makeStyles,
+  useTheme,
+  Theme,
+  createStyles,
+} from "@material-ui/core/styles";
 import { TaskListsSelectors } from "../Store/TaskList.Selectors";
-import { ITaskList } from "../Models/Tasks.Models";
 import { TaskListActions } from "../Store/TaskList.Actions";
+import { TextField } from "@material-ui/core";
+import { ITaskList } from "../Models/Tasks.Models";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-  drawer: {
-    [theme.breakpoints.up("sm")]: {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: "flex",
+    },
+    drawer: {
+      [theme.breakpoints.up("sm")]: {
+        width: drawerWidth,
+        flexShrink: 0,
+      },
+    },
+    appBar: {
+      [theme.breakpoints.up("sm")]: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
+      },
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+      [theme.breakpoints.up("sm")]: {
+        display: "none",
+      },
+    },
+    // necessary for content to be below app bar
+    toolbar: theme.mixins.toolbar,
+    drawerPaper: {
       width: drawerWidth,
-      flexShrink: 0,
     },
-  },
-  appBar: {
-    [theme.breakpoints.up("sm")]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
+    content: {
+      flexGrow: 1,
+      padding: theme.spacing(3),
     },
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
-      display: "none",
-    },
-  },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-}));
+  })
+);
 
-interface ITaskListPanelProps {}
+interface Props {}
 
-export const TaskListPanel: React.FunctionComponent = (
-  props: ITaskListPanelProps
-): JSX.Element => {
-  // const { window } = props;
+export default function ResponsiveDrawer(props: Props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const [newTaskListTitle, setNewTaskListTitle] = useState("");
-  const newTaskListRef = useRef<HTMLFormElement>(null);
   const dispatch = useDispatch();
   const taskLists = useSelector(TaskListsSelectors.getTaskLists);
 
-  const onAdd = useCallback(() => {
-    // const formRef = newTaskListRef.current;
-    // const taskListName = formRef && formRef["newTask"].value;
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
-    const taskListName = "react"; // newTaskListTitle;
+  const onAdd = useCallback(() => {
+    const taskListName = newTaskListTitle;
     if (!taskListName) {
       console.error("taskListName is undefined");
       return;
     }
-
     const taskList: ITaskList = {
       id: uuid(),
       title: taskListName,
@@ -94,7 +94,23 @@ export const TaskListPanel: React.FunctionComponent = (
     };
 
     dispatch(TaskListActions.CreateTaskList(taskList));
-  }, [dispatch]);
+  }, [dispatch, newTaskListTitle]);
+
+  const onDelete1 = useCallback(
+    (event, data: HTMLDivElement) => {
+      if (Array.isArray(data)) {
+        data.map((row) => {
+          console.log("You want to delete " + row.id);
+          return 0;
+        });
+      } else {
+        console.log("You want to delete " + data.id);
+        const action = TaskListActions.DeleteTaskList(data.id);
+        dispatch(action);
+      }
+    },
+    [dispatch]
+  );
 
   const onDelete = useCallback(
     (taskListId: string) => {
@@ -104,32 +120,24 @@ export const TaskListPanel: React.FunctionComponent = (
     [dispatch]
   );
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
   const drawer = (
     <div>
       <div className={classes.toolbar} />
-      <form ref={newTaskListRef}>
-        <input
-          type="text"
-          placeholder="add task list"
-          name="newTask"
-          value={newTaskListTitle}
-          onChange={(e) => setNewTaskListTitle(e.target.value)}
-        />
-        <IconButton
-          color="primary"
-          aria-label="add to shopping cart"
-          onClick={onAdd}
-        >
-          <AddIcon />
-        </IconButton>
-      </form>
+      <Divider />
+      <TextField
+        label="Add task list"
+        value={newTaskListTitle}
+        onChange={(e) => {
+          setNewTaskListTitle(e.target.value);
+        }}
+      />
+      <IconButton color="primary" aria-label="add to task list" onClick={onAdd}>
+        <AddIcon />
+      </IconButton>
       <Divider />
       <List>
         {taskLists.map((taskList, index) => (
-          <ListItem button key={index}>
+          <ListItem button key={index} onClick={() => onDelete(taskList.id)}>
             <ListItemIcon>
               <FormatListBulletedIcon />
             </ListItemIcon>
@@ -140,9 +148,6 @@ export const TaskListPanel: React.FunctionComponent = (
       <Divider />
     </div>
   );
-
-  const container = undefined;
-  // window !== undefined ? () => window().document.body : undefined;
 
   useEffect(() => {
     dispatch(TaskListActions.GetTaskLists());
@@ -163,7 +168,7 @@ export const TaskListPanel: React.FunctionComponent = (
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Todo App
+            Responsive drawer
           </Typography>
         </Toolbar>
       </AppBar>
@@ -171,7 +176,6 @@ export const TaskListPanel: React.FunctionComponent = (
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden smUp implementation="css">
           <Drawer
-            container={container}
             variant="temporary"
             anchor={theme.direction === "rtl" ? "right" : "left"}
             open={mobileOpen}
@@ -218,4 +222,4 @@ export const TaskListPanel: React.FunctionComponent = (
       </main>
     </div>
   );
-};
+}

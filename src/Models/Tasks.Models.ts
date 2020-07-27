@@ -14,5 +14,5 @@ export interface ITaskList {
   id: string;
   title: string;
   tasks?: ITask[];
-  createAt?: string;
+  createdAt: string;
 }
