@@ -3,23 +3,29 @@ import {
   TaskListActionsAllTypes,
   TaskListActionTypes,
 } from "./TaskList.Actions";
+import { TaskActionTypes, TaskActionAllTypes } from "./Task.Actions";
 
 export interface ITaskListState {
   taskLists: ITaskList[];
   taskListLoadState: LoadState;
+  taskLoadState: LoadState;
 }
 
 const initialState: ITaskListState = {
   taskLists: [],
   taskListLoadState: LoadState.Initial,
+  taskLoadState: LoadState.Initial,
 };
 
 export function taskListReducer(
   state: ITaskListState = initialState,
-  action: TaskListActionsAllTypes
+  action: TaskListActionsAllTypes | TaskActionAllTypes
 ): ITaskListState {
   let newTaskLists: ITaskList[] = [];
   let index = -1;
+  let taskListIndex = -1;
+  let tempTaskList: ITaskList;
+  let newTaskList: ITaskList;
 
   switch (action.type) {
     case TaskListActionTypes.CREATE_TASKLIST:
@@ -137,6 +143,126 @@ export function taskListReducer(
       return {
         ...state,
         taskListLoadState: LoadState.LoadFailed,
+      };
+
+    case TaskActionTypes.CREATE_TASK:
+      return {
+        ...state,
+        taskLoadState: LoadState.Loading,
+      };
+
+    case TaskActionTypes.CREATE_TASK_SUCCESS:
+      taskListIndex = state.taskLists.findIndex(
+        (taskList) => taskList.id === action.payload.taskListId
+      );
+
+      tempTaskList = state.taskLists[taskListIndex];
+
+      newTaskList = {
+        id: tempTaskList.id,
+        title: tempTaskList.title,
+        createdAt: tempTaskList.createdAt,
+        tasks: [action.payload, ...tempTaskList.tasks],
+      };
+
+      return {
+        ...state,
+        taskLists: [
+          ...state.taskLists.slice(0, taskListIndex),
+          newTaskList,
+          ...state.taskLists.slice(taskListIndex + 1),
+        ],
+        taskLoadState: LoadState.LoadSuccessful,
+      };
+
+    case TaskActionTypes.CREATE_TASK_FAILURE:
+      return {
+        ...state,
+        taskLoadState: LoadState.LoadFailed,
+      };
+
+    case TaskActionTypes.DELETE_TASK:
+      return {
+        ...state,
+        taskLoadState: LoadState.Loading,
+      };
+    case TaskActionTypes.DELETE_TASK_SUCCESS:
+      taskListIndex = state.taskLists.findIndex(
+        (taskList) => taskList.id === action.payload.taskListId
+      );
+
+      tempTaskList = state.taskLists[taskListIndex];
+
+      newTaskList = {
+        id: tempTaskList.id,
+        title: tempTaskList.title,
+        createdAt: tempTaskList.createdAt,
+        tasks: tempTaskList.tasks.filter(
+          (task) => task.id !== action.payload.taskId
+        ),
+      };
+
+      return {
+        ...state,
+        taskLists: [
+          ...state.taskLists.slice(0, taskListIndex),
+          newTaskList,
+          ...state.taskLists.slice(taskListIndex + 1),
+        ],
+        taskLoadState: LoadState.LoadSuccessful,
+      };
+
+    case TaskActionTypes.DELETE_TASK_FAILURE:
+      return {
+        ...state,
+        taskLoadState: LoadState.LoadFailed,
+      };
+
+    case TaskActionTypes.GET_TASKS:
+      return {
+        ...state,
+        taskLoadState: LoadState.Loading,
+      };
+    case TaskActionTypes.GET_TASKS_SUCCESS:
+      if (!action.payload || action.payload.length === 0) {
+        return {
+          ...state,
+          taskLoadState: LoadState.LoadSuccessful,
+        };
+      }
+
+      const newTasks = action.payload.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      taskListIndex = state.taskLists.findIndex(
+        (taskList) => taskList.id === action.payload[0].taskListId
+      );
+
+      tempTaskList = state.taskLists[taskListIndex];
+
+      newTaskList = {
+        id: tempTaskList.id,
+        title: tempTaskList.title,
+        createdAt: tempTaskList.createdAt,
+        tasks: newTasks,
+      };
+
+      return {
+        ...state,
+        taskLists: [
+          ...state.taskLists.slice(0, taskListIndex),
+          newTaskList,
+          ...state.taskLists.slice(taskListIndex + 1),
+        ],
+        taskLoadState: LoadState.LoadSuccessful,
+      };
+
+    case TaskActionTypes.GET_TASKS_FAILURE:
+      return {
+        ...state,
+        taskLoadState: LoadState.LoadFailed,
       };
 
     default:

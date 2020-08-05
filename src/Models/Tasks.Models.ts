@@ -8,11 +8,26 @@ export enum LoadState {
 export interface ITask {
   id: string;
   title: string;
+  taskListId: string;
+  createdAt: string;
 }
 
 export interface ITaskList {
   id: string;
   title: string;
-  tasks?: ITask[];
   createdAt: string;
+  tasks: ITask[];
 }
+
+export interface ICreateOrUpdateTaskParams {
+  taskListId: string;
+  task: ITask;
+}
+
+export interface ITaskParams {
+  taskListId: string;
+  taskId: string;
+}
+
+export interface IDeleteTaskParams extends ITaskParams {}
+export interface IGetTaskParams extends ITaskParams {}

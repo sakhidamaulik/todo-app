@@ -1,9 +1,17 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
+import React from "react";
+import { shallow } from "enzyme";
+import App from "./App";
+import TaskListPanel from "./Components/TaskListPanel";
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe("App", () => {
+  let wrapper: any;
+  beforeEach(() => (wrapper = shallow(<App />)));
+
+  it("should render correctly", () => {
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it("should render a TaskListPanel component", () => {
+    expect(wrapper.containsMatchingElement(<TaskListPanel />)).toEqual(true);
+  });
 });

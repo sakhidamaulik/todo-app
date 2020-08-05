@@ -67,7 +67,7 @@ function* GetTaskList(
   }
 }
 
-export function* WatchShipmentsSagas(): SagaIterator {
+export function* WatchTaskListsSagas(): SagaIterator {
   yield takeLatest(TaskListActionTypes.CREATE_TASKLIST, CreateTaskList);
   yield takeLatest(TaskListActionTypes.UPDATE_TASKLIST, UpdateTaskList);
   yield takeLatest(TaskListActionTypes.DELETE_TASKLIST, DeleteTaskList);

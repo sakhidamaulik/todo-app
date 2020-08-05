@@ -4,19 +4,20 @@ import { Provider } from "react-redux";
 import createSagaMiddleware from "redux-saga";
 
 import { taskListReducer } from "./Store/TaskLists.Reducer";
-import { WatchShipmentsSagas } from "./Store/TaskList.Sagas";
+import rootSaga from "./Store/RootSaga";
 
 import "./App.css";
-import { TaskListPanel } from "./Components/TaskListPanel";
-import ResponsiveDrawer from "./Components/ResponsiveDrawer";
+// import { TaskListPanelOLD } from "./Components/TaskListPanelOLD";
+import TaskListPanel from "./Components/TaskListPanel";
+
 export const App = () => {
   const sagaMiddleware = createSagaMiddleware();
   const store = createStore(taskListReducer, applyMiddleware(sagaMiddleware));
-  sagaMiddleware.run(WatchShipmentsSagas);
+  sagaMiddleware.run(rootSaga);
 
   return (
     <Provider store={store}>
-      <ResponsiveDrawer />
+      <TaskListPanel />
     </Provider>
   );
 };
