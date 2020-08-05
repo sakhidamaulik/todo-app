@@ -1,41 +1,41 @@
 import { ITask, LoadState } from "../Models/Tasks.Models";
 import { TaskActionAllTypes, TaskActionTypes } from "./Task.Actions";
 
-// export interface ITaskState {
-// tasks: ITask[];
-// taskLoadState: LoadState;
-// }
+export interface ITaskState {
+  tasks: ITask[];
+  taskLoadState: LoadState;
+}
 
-// const initialState: ITaskState = {
-// tasks: [],
-// taskLoadState: LoadState.Initial,
-// };
+const initialState: ITaskState = {
+  tasks: [],
+  taskLoadState: LoadState.Initial,
+};
 
 export function taskReducer(
-state: ITaskListState = initialState,
-action: TaskActionAllTypes
+  state: ITaskState = initialState,
+  action: TaskActionAllTypes
 ): ITaskState {
-let newTasks: ITask[] = [];
-let index = -1;
+  let newTasks: ITask[] = [];
+  let index = -1;
 
-switch (action.type) {
-case TaskActionTypes.CREATE_TASK:
-return {
-...state,
-taskLoadState: LoadState.Loading,
-};
-case TaskActionTypes.CREATE_TASK_SUCCESS:
-newTasks = [action.payload, ...state.tasks];
-return {
-...state,
-tasks: newTasks,
-taskLoadState: LoadState.LoadSuccessful,
-};
-case TaskActionTypes.CREATE_TASK_FAILURE:
-return {
-...state,
-taskLoadState: LoadState.LoadFailed,
-};
+  switch (action.type) {
+    case TaskActionTypes.CREATE_TASK:
+      return {
+        ...state,
+        taskLoadState: LoadState.Loading,
+      };
+    case TaskActionTypes.CREATE_TASK_SUCCESS:
+      newTasks = [action.payload, ...state.tasks];
+      return {
+        ...state,
+        tasks: newTasks,
+        taskLoadState: LoadState.LoadSuccessful,
+      };
+    case TaskActionTypes.CREATE_TASK_FAILURE:
+      return {
+        ...state,
+        taskLoadState: LoadState.LoadFailed,
+      };
 
     case TaskActionTypes.UPDATE_TASK:
       return {
@@ -131,8 +131,7 @@ taskLoadState: LoadState.LoadFailed,
 
     default:
       return state;
-
-}
+  }
 }
 
 export type TaskReducerState = ReturnType<typeof taskReducer>;

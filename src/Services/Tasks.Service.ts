@@ -9,7 +9,7 @@ import axios from "axios";
 const BASE_URL = "http://localhost:3004";
 export const tasksService = {
   createTask: async (params: ICreateOrUpdateTaskParams): Promise<ITask> => {
-    const url = `${BASE_URL}/tasklists/${params.taskListId}/tasks`;
+    const url = `${BASE_URL}/tasks`;
     const response = await axios.post<ITask>(url, params.task);
 
     return response.data;

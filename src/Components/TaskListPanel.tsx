@@ -206,13 +206,7 @@ export default function TaskListPanel(props: Props) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <TasksPanel
-          taskListId={selectedTaskListId}
-          tasks={
-            taskLists.find((taskList) => taskList.id === selectedTaskListId)
-              ?.tasks || []
-          }
-        />
+        <TasksPanel taskListId={selectedTaskListId} />
       </main>
     </div>
   );
