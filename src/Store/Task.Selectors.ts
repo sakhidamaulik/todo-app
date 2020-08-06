@@ -2,12 +2,12 @@ import { ITask } from "./../Models/Tasks.Models";
 import { createSelector } from "reselect";
 import { LoadState } from "../Models/Tasks.Models";
 import { RootReducerState } from "./RootReducer";
-import { ITaskState } from "./Task.Reducers";
+import { ITasksState } from "./Task.Reducers";
 
 export class TasksSelectors {
   public static areTasksLoading = createSelector<
     RootReducerState,
-    ITaskState,
+    ITasksState,
     boolean
   >(
     (state) => state.tasksState,
@@ -18,7 +18,7 @@ export class TasksSelectors {
 
   public static areTaskListsLoadFailed = createSelector<
     RootReducerState,
-    ITaskState,
+    ITasksState,
     boolean
   >(
     (state) => state.tasksState,
@@ -27,13 +27,10 @@ export class TasksSelectors {
 
   public static getTasks = createSelector<
     RootReducerState,
-    ITaskState,
+    ITasksState,
     (taskListId: string) => ITask[]
   >(
     (state) => state.tasksState,
-    (state) =>
-      state.tasksMap[taskListId].filter(
-        (task) => task.taskListId === taskListId
-      )
+    (state) => state.tasksMap[taskListId]
   );
 }

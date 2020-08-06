@@ -1,20 +1,20 @@
 import { ITask, LoadState } from "../Models/Tasks.Models";
 import { TaskActionAllTypes, TaskActionTypes } from "./Task.Actions";
 
-export interface ITaskState {
+export interface ITasksState {
   tasksMap: { [taskListId: string]: ITask[] };
   taskLoadState: LoadState;
 }
 
-const initialState: ITaskState = {
+const initialState: ITasksState = {
   tasksMap: {},
   taskLoadState: LoadState.Initial,
 };
 
 export function taskReducer(
-  state: ITaskState = initialState,
+  state: ITasksState = initialState,
   action: TaskActionAllTypes
-): ITaskState {
+): ITasksState {
   let newTasks: ITask[] = [];
   let index = -1;
   switch (action.type) {

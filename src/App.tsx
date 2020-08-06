@@ -7,9 +7,8 @@ import { taskListReducer } from "./Store/TaskLists.Reducer";
 import rootSaga from "./Store/RootSaga";
 
 import "./App.css";
-// import { TaskListPanelOLD } from "./Components/TaskListPanelOLD";
 import TaskListPanel from "./Components/TaskListPanel";
-import { taskReducer } from "./Store/Task.Reducers";
+import { rootReducer } from "./Store/RootReducer";
 
 export const App = () => {
   const sagaMiddleware = createSagaMiddleware();
