@@ -25,12 +25,12 @@ export class TasksSelectors {
     (state) => state.taskLoadState === LoadState.LoadFailed
   );
 
-  public static getTasks = createSelector<
+  public static getTasksMap = createSelector<
     RootReducerState,
     ITasksState,
-    (taskListId: string) => ITask[]
+    { [taskListId: string]: ITask[] }
   >(
     (state) => state.tasksState,
-    (state) => state.tasksMap[taskListId]
+    (state) => state.tasksMap
   );
 }

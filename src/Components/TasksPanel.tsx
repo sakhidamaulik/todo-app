@@ -1,7 +1,7 @@
-import React, { useCallback, useSelector } from "react";
+import React, { useCallback, useEffect } from "react";
 import { ITask } from "../Models/Tasks.Models";
 import { v4 as uuid } from "uuid";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TaskActions } from "../Store/Task.Actions";
 import NewTaskItem from "./NewTaskItem";
 import TaskItem from "./TaskItem";
@@ -16,10 +16,16 @@ export const TasksPanel: React.FunctionComponent<ITasksPanelProps> = (
 ): JSX.Element => {
   const dispatch = useDispatch();
   const { taskListId } = props;
-  const tasks = useSelector(TasksSelectors.getTasks)(taskListId);
+  const tasksMap: { [taskListId: string]: ITask[] } = useSelector(
+    TasksSelectors.getTasksMap
+  );
 
   const onAddTask = useCallback(
     (title: string) => {
+      if (!title) {
+        console.error("Task title should not be empty");
+        return;
+      }
       const newTask: ITask = {
         id: uuid(),
         title,
@@ -31,12 +37,19 @@ export const TasksPanel: React.FunctionComponent<ITasksPanelProps> = (
 
     [dispatch, taskListId]
   );
+
+  useEffect(() => {
+    dispatch(TaskActions.GetTasks(taskListId));
+  }, [dispatch, taskListId]);
+
   return (
     <div>
       <NewTaskItem onAddTask={onAddTask} />
-      {tasks.map((task) => (
-        <TaskItem task={task} />
-      ))}
+      {tasksMap &&
+        tasksMap[taskListId] &&
+        tasksMap[taskListId].map((task) => (
+          <TaskItem key={task.id} task={task} />
+        ))}
     </div>
   );
 };

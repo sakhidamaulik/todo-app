@@ -4,22 +4,22 @@ import {
   TaskListActionTypes,
 } from "./TaskList.Actions";
 
-export interface ITaskListState {
+export interface ITaskListsState {
   taskLists: ITaskList[];
   taskListLoadState: LoadState;
   taskLoadState: LoadState;
 }
 
-const initialState: ITaskListState = {
+const initialState: ITaskListsState = {
   taskLists: [],
   taskListLoadState: LoadState.Initial,
   taskLoadState: LoadState.Initial,
 };
 
 export function taskListReducer(
-  state: ITaskListState = initialState,
+  state: ITaskListsState = initialState,
   action: TaskListActionsAllTypes
-): ITaskListState {
+): ITaskListsState {
   let newTaskLists: ITaskList[] = [];
   let index = -1;
 

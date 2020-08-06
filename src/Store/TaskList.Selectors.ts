@@ -1,4 +1,4 @@
-import { ITaskListState } from "./TaskLists.Reducer";
+import { ITaskListsState } from "./TaskLists.Reducer";
 import { createSelector } from "reselect";
 import { LoadState, ITaskList } from "../Models/Tasks.Models";
 import { RootReducerState } from "./RootReducer";
@@ -6,7 +6,7 @@ import { RootReducerState } from "./RootReducer";
 export class TaskListsSelectors {
   public static areTaskListsLoading = createSelector<
     RootReducerState,
-    ITaskListState,
+    ITaskListsState,
     boolean
   >(
     (state) => state.taskListsState,
@@ -17,7 +17,7 @@ export class TaskListsSelectors {
 
   public static areTaskListsLoadFailed = createSelector<
     RootReducerState,
-    ITaskListState,
+    ITaskListsState,
     boolean
   >(
     (state) => state.taskListsState,
@@ -26,7 +26,7 @@ export class TaskListsSelectors {
 
   public static getTaskLists = createSelector<
     RootReducerState,
-    ITaskListState,
+    ITaskListsState,
     ITaskList[]
   >(
     (state) => state.taskListsState,

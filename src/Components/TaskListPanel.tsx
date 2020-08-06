@@ -75,7 +75,9 @@ export default function TaskListPanel(props: Props) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const [newTaskListTitle, setNewTaskListTitle] = useState("");
-  const [selectedTaskListId, setSelectedTaskListId] = useState("");
+  const [selectedTaskListId, setSelectedTaskListId] = useState<
+    string | undefined
+  >(undefined);
   const dispatch = useDispatch();
   const taskLists = useSelector(TaskListsSelectors.getTaskLists);
   if (!selectedTaskListId && taskLists.length > 0) {
@@ -89,7 +91,7 @@ export default function TaskListPanel(props: Props) {
   const onAddTaskList = useCallback(() => {
     let taskListName = newTaskListTitle;
     if (!taskListName) {
-      console.error("taskListName is undefined");
+      console.error("Task list title should not be empty");
       return;
     }
     const taskList: ITaskList = {
@@ -130,10 +132,10 @@ export default function TaskListPanel(props: Props) {
       </IconButton>
       <Divider />
       <List>
-        {taskLists.map((taskList, index) => (
+        {taskLists.map((taskList) => (
           <ListItem
             button
-            key={index}
+            key={taskList.id}
             onClick={() =>
               /*onDeleteTaskList(taskList.id) */ setSelectedTaskListId(
                 taskList.id
@@ -206,7 +208,7 @@ export default function TaskListPanel(props: Props) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <TasksPanel taskListId={selectedTaskListId} />
+        {selectedTaskListId && <TasksPanel taskListId={selectedTaskListId} />}
       </main>
     </div>
   );
