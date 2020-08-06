@@ -1,5 +1,5 @@
 import React from "react";
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import createSagaMiddleware from "redux-saga";
 
@@ -9,10 +9,13 @@ import rootSaga from "./Store/RootSaga";
 import "./App.css";
 // import { TaskListPanelOLD } from "./Components/TaskListPanelOLD";
 import TaskListPanel from "./Components/TaskListPanel";
+import { taskReducer } from "./Store/Task.Reducers";
 
 export const App = () => {
   const sagaMiddleware = createSagaMiddleware();
-  const store = createStore(taskListReducer, applyMiddleware(sagaMiddleware));
+
+  
+  const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
   sagaMiddleware.run(rootSaga);
 
   return (

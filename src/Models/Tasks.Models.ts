@@ -19,11 +19,6 @@ export interface ITaskList {
   tasks: ITask[];
 }
 
-export interface ICreateOrUpdateTaskParams {
-  taskListId: string;
-  task: ITask;
-}
-
 export interface ITaskParams {
   taskListId: string;
   taskId: string;
@@ -31,3 +26,18 @@ export interface ITaskParams {
 
 export interface IDeleteTaskParams extends ITaskParams {}
 export interface IGetTaskParams extends ITaskParams {}
+
+export interface IDeleteTaskResult {
+  taskListId: string;
+  taskId: string;
+}
+
+export interface IGetTasksResult {
+  taskListId: string;
+  tasks: ITask[];
+}
+
+export interface IGetTaskResult {
+  taskListId: string;
+  task: ITask;
+}

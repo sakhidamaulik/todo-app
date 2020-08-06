@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, takeLatest, takeEvery } from "redux-saga/effects";
 import { SagaIterator } from "redux-saga";
 import {
   TaskListActionTypes,
@@ -68,9 +68,9 @@ function* GetTaskList(
 }
 
 export function* WatchTaskListsSagas(): SagaIterator {
-  yield takeLatest(TaskListActionTypes.CREATE_TASKLIST, CreateTaskList);
-  yield takeLatest(TaskListActionTypes.UPDATE_TASKLIST, UpdateTaskList);
-  yield takeLatest(TaskListActionTypes.DELETE_TASKLIST, DeleteTaskList);
+  yield takeEvery(TaskListActionTypes.CREATE_TASKLIST, CreateTaskList);
+  yield takeEvery(TaskListActionTypes.UPDATE_TASKLIST, UpdateTaskList);
+  yield takeEvery(TaskListActionTypes.DELETE_TASKLIST, DeleteTaskList);
   yield takeLatest(TaskListActionTypes.GET_TASKLISTS, GetTaskLists);
   yield takeLatest(TaskListActionTypes.GET_TASKLIST, GetTaskList);
 }

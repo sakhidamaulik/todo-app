@@ -1,5 +1,5 @@
 import React, { useCallback, useSelector } from "react";
-import { ITask, ICreateOrUpdateTaskParams } from "../Models/Tasks.Models";
+import { ITask } from "../Models/Tasks.Models";
 import { v4 as uuid } from "uuid";
 import { useDispatch } from "react-redux";
 import { TaskActions } from "../Store/Task.Actions";
@@ -17,7 +17,7 @@ export const TasksPanel: React.FunctionComponent<ITasksPanelProps> = (
   const dispatch = useDispatch();
   const { taskListId } = props;
   const tasks = useSelector(TasksSelectors.getTasks)(taskListId);
-  
+
   const onAddTask = useCallback(
     (title: string) => {
       const newTask: ITask = {
@@ -26,11 +26,7 @@ export const TasksPanel: React.FunctionComponent<ITasksPanelProps> = (
         createdAt: new Date().toString(),
         taskListId,
       };
-      const params: ICreateOrUpdateTaskParams = {
-        taskListId,
-        task: newTask,
-      };
-      dispatch(TaskActions.CreateTask(params));
+      dispatch(TaskActions.CreateTask(newTask));
     },
 
     [dispatch, taskListId]

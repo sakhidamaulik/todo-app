@@ -1,7 +1,9 @@
 import {
   ITask,
-  ICreateOrUpdateTaskParams,
   IDeleteTaskParams,
+  IDeleteTaskResult,
+  IGetTasksResult,
+  IGetTaskResult,
 } from "../Models/Tasks.Models";
 
 export interface Action<T extends string, U> {
@@ -38,10 +40,8 @@ export enum TaskActionTypes {
 }
 
 export const TaskActions = {
-  CreateTask: (
-    params: ICreateOrUpdateTaskParams
-  ): Action<TaskActionTypes.CREATE_TASK, ICreateOrUpdateTaskParams> => {
-    return createAction(TaskActionTypes.CREATE_TASK, params);
+  CreateTask: (task: ITask): Action<TaskActionTypes.CREATE_TASK, ITask> => {
+    return createAction(TaskActionTypes.CREATE_TASK, task);
   },
   CreateTaskSuccess: (
     task: ITask
@@ -54,10 +54,8 @@ export const TaskActions = {
     return createAction(TaskActionTypes.CREATE_TASK_FAILURE, error);
   },
 
-  UpdateTask: (
-    params: ICreateOrUpdateTaskParams
-  ): Action<TaskActionTypes.UPDATE_TASK, ICreateOrUpdateTaskParams> => {
-    return createAction(TaskActionTypes.UPDATE_TASK, params);
+  UpdateTask: (task: ITask): Action<TaskActionTypes.UPDATE_TASK, ITask> => {
+    return createAction(TaskActionTypes.UPDATE_TASK, task);
   },
   UpdateTaskSuccess: (
     task: ITask
@@ -76,9 +74,9 @@ export const TaskActions = {
     return createAction(TaskActionTypes.DELETE_TASK, params);
   },
   DeleteTaskSuccess: (
-    params: IDeleteTaskParams
-  ): Action<TaskActionTypes.DELETE_TASK_SUCCESS, IDeleteTaskParams> => {
-    return createAction(TaskActionTypes.DELETE_TASK_SUCCESS, params);
+    result: IDeleteTaskResult
+  ): Action<TaskActionTypes.DELETE_TASK_SUCCESS, IDeleteTaskResult> => {
+    return createAction(TaskActionTypes.DELETE_TASK_SUCCESS, result);
   },
   DeleteTaskFailure: (
     error: Error
@@ -90,9 +88,9 @@ export const TaskActions = {
     return createAction(TaskActionTypes.GET_TASKS, taskListId);
   },
   GetTasksSuccess: (
-    tasks: ITask[]
-  ): Action<TaskActionTypes.GET_TASKS_SUCCESS, ITask[]> =>
-    createAction(TaskActionTypes.GET_TASKS_SUCCESS, tasks),
+    result: IGetTasksResult
+  ): Action<TaskActionTypes.GET_TASKS_SUCCESS, IGetTasksResult> =>
+    createAction(TaskActionTypes.GET_TASKS_SUCCESS, result),
   GetTasksFailure: (
     error: Error
   ): Action<TaskActionTypes.GET_TASKS_FAILURE, Error> =>
@@ -102,9 +100,9 @@ export const TaskActions = {
     return createAction(TaskActionTypes.GET_TASK, taskId);
   },
   GetTaskSuccess: (
-    task: ITask
-  ): Action<TaskActionTypes.GET_TASK_SUCCESS, ITask> =>
-    createAction(TaskActionTypes.GET_TASK_SUCCESS, task),
+    result: IGetTaskResult
+  ): Action<TaskActionTypes.GET_TASK_SUCCESS, IGetTaskResult> =>
+    createAction(TaskActionTypes.GET_TASK_SUCCESS, result),
   GetTaskFailure: (
     error: Error
   ): Action<TaskActionTypes.GET_TASK_FAILURE, Error> =>

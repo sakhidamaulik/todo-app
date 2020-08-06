@@ -2,12 +2,12 @@ import { ITask, LoadState } from "../Models/Tasks.Models";
 import { TaskActionAllTypes, TaskActionTypes } from "./Task.Actions";
 
 export interface ITaskState {
-  tasks: ITask[];
+  tasksMap: { [taskListId: string]: ITask[] };
   taskLoadState: LoadState;
 }
 
 const initialState: ITaskState = {
-  tasks: [],
+  tasksMap: {},
   taskLoadState: LoadState.Initial,
 };
 
@@ -17,7 +17,6 @@ export function taskReducer(
 ): ITaskState {
   let newTasks: ITask[] = [];
   let index = -1;
-
   switch (action.type) {
     case TaskActionTypes.CREATE_TASK:
       return {
@@ -25,10 +24,15 @@ export function taskReducer(
         taskLoadState: LoadState.Loading,
       };
     case TaskActionTypes.CREATE_TASK_SUCCESS:
-      newTasks = [action.payload, ...state.tasks];
       return {
         ...state,
-        tasks: newTasks,
+        tasksMap: {
+          ...state.tasksMap,
+          [action.payload.taskListId]: [
+            action.payload,
+            ...state.tasksMap[action.payload.taskListId],
+          ],
+        },
         taskLoadState: LoadState.LoadSuccessful,
       };
     case TaskActionTypes.CREATE_TASK_FAILURE:
@@ -43,21 +47,26 @@ export function taskReducer(
         taskLoadState: LoadState.Loading,
       };
     case TaskActionTypes.UPDATE_TASK_SUCCESS:
-      index = state.tasks.findIndex((task) => task.id === action.payload.id);
+      index = state.tasksMap[action.payload.taskListId].findIndex(
+        (task) => task.id === action.payload.id
+      );
 
       if (index >= 0) {
         newTasks = [
-          ...state.tasks.slice(0, index),
+          ...state.tasksMap[action.payload.taskListId].slice(0, index),
           action.payload,
-          ...state.tasks.slice(index + 1),
+          ...state.tasksMap[action.payload.taskListId].slice(index + 1),
         ];
       } else {
-        newTasks = [action.payload, ...state.tasks];
+        newTasks = [
+          action.payload,
+          ...state.tasksMap[action.payload.taskListId],
+        ];
       }
 
       return {
         ...state,
-        tasks: newTasks,
+        tasksMap: { ...state.tasksMap, [action.payload.taskListId]: newTasks },
         taskLoadState: LoadState.LoadSuccessful,
       };
     case TaskActionTypes.UPDATE_TASK_FAILURE:
@@ -72,10 +81,12 @@ export function taskReducer(
         taskLoadState: LoadState.Loading,
       };
     case TaskActionTypes.DELETE_TASK_SUCCESS:
-      newTasks = state.tasks.filter((task) => task.id !== action.payload);
+      newTasks = state.tasksMap[action.payload.taskListId].filter(
+        (task) => task.id !== action.payload.taskId
+      );
       return {
         ...state,
-        tasks: newTasks,
+        tasksMap: { ...state.tasksMap, [action.payload.taskListId]: newTasks },
         taskLoadState: LoadState.LoadSuccessful,
       };
     case TaskActionTypes.DELETE_TASK_FAILURE:
@@ -90,13 +101,13 @@ export function taskReducer(
         taskLoadState: LoadState.Loading,
       };
     case TaskActionTypes.GET_TASKS_SUCCESS:
-      newTasks = action.payload.sort(
+      newTasks = action.payload.tasks.sort(
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
       return {
         ...state,
-        tasks: newTasks,
+        tasksMap: { ...state.tasksMap, [action.payload.taskListId]: newTasks },
         taskLoadState: LoadState.LoadSuccessful,
       };
     case TaskActionTypes.GET_TASKS_FAILURE:
@@ -111,16 +122,26 @@ export function taskReducer(
         taskLoadState: LoadState.Loading,
       };
     case TaskActionTypes.GET_TASK_SUCCESS:
-      index = state.tasks.findIndex((task) => task.id === action.payload.id);
+      index = state.tasksMap[action.payload.taskListId].findIndex(
+        (task) => task.id === action.payload.task.id
+      );
+
       if (index >= 0) {
-        newTasks = state.tasks.splice(index, 1, action.payload);
+        newTasks = [
+          ...state.tasksMap[action.payload.taskListId].slice(0, index),
+          action.payload.task,
+          ...state.tasksMap[action.payload.taskListId].slice(index + 1),
+        ];
       } else {
-        newTasks = [...state.tasks, action.payload];
+        newTasks = [
+          action.payload.task,
+          ...state.tasksMap[action.payload.taskListId],
+        ];
       }
 
       return {
         ...state,
-        tasks: newTasks,
+        tasksMap: { ...state.tasksMap, [action.payload.taskListId]: newTasks },
         taskLoadState: LoadState.LoadSuccessful,
       };
     case TaskActionTypes.GET_TASK_FAILURE:
