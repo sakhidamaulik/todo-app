@@ -1,9 +1,8 @@
 import React from "react";
-import { createStore, applyMiddleware, combineReducers } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import createSagaMiddleware from "redux-saga";
 
-import { taskListReducer } from "./Store/TaskLists.Reducer";
 import rootSaga from "./Store/RootSaga";
 
 import "./App.css";

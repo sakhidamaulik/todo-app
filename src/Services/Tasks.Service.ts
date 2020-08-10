@@ -1,8 +1,4 @@
-import {
-  ITask,
-  IDeleteTaskParams,
-  IGetTaskParams,
-} from "./../Models/Tasks.Models";
+import { ITask } from "./../Models/Tasks.Models";
 import axios from "axios";
 
 const BASE_URL = "http://localhost:3004";

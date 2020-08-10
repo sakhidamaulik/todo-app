@@ -6,6 +6,20 @@ import { TaskActions } from "../Store/Task.Actions";
 import NewTaskItem from "./NewTaskItem";
 import TaskItem from "./TaskItem";
 import { TasksSelectors } from "../Store/Task.Selectors";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { Divider } from "@material-ui/core";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: "flex",
+      flexDirection: "column",
+    },
+    content: {
+      flex: 1,
+    },
+  })
+);
 
 interface ITasksPanelProps {
   taskListId: string;
@@ -14,6 +28,7 @@ interface ITasksPanelProps {
 export const TasksPanel: React.FunctionComponent<ITasksPanelProps> = (
   props: ITasksPanelProps
 ): JSX.Element => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const { taskListId } = props;
   const tasksMap: { [taskListId: string]: ITask[] } = useSelector(
@@ -43,12 +58,15 @@ export const TasksPanel: React.FunctionComponent<ITasksPanelProps> = (
   }, [dispatch, taskListId]);
 
   return (
-    <div>
+    <div className={classes.root}>
       <NewTaskItem onAddTask={onAddTask} />
       {tasksMap &&
         tasksMap[taskListId] &&
         tasksMap[taskListId].map((task) => (
-          <TaskItem key={task.id} task={task} />
+          <>
+            <TaskItem key={task.id} task={task} />
+            <Divider />
+          </>
         ))}
     </div>
   );

@@ -10,7 +10,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuIcon from "@material-ui/icons/Menu";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import AddIcon from "@material-ui/icons/Add";
 import { v4 as uuid } from "uuid";
 import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
@@ -61,6 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: drawerWidth,
     },
     content: {
+      flex: 1,
       flexGrow: 1,
       padding: theme.spacing(3),
     },
@@ -172,7 +172,7 @@ export default function TaskListPanel(props: Props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Responsive drawer
+            Task App
           </Typography>
         </Toolbar>
       </AppBar>
